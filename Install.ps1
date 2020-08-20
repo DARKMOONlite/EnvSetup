@@ -14,19 +14,6 @@ Write-Host "Disable Sleep on AC Power..." -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
 Powercfg /Change monitor-timeout-ac 20
 Powercfg /Change standby-timeout-ac 0
-# -----------------------------------------------------------------------------
-Write-Host ""
-Write-Host "Add 'This PC' Desktop Icon..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-$thisPCIconRegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel"
-$thisPCRegValname = "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" 
-$item = Get-ItemProperty -Path $thisPCIconRegPath -Name $thisPCRegValname -ErrorAction SilentlyContinue 
-if ($item) { 
-    Set-ItemProperty  -Path $thisPCIconRegPath -name $thisPCRegValname -Value 0  
-} 
-else { 
-    New-ItemProperty -Path $thisPCIconRegPath -Name $thisPCRegValname -Value 0 -PropertyType DWORD | Out-Null  
-} 
 
 # To list all appx packages:
 # Get-AppxPackage | Format-Table -Property Name,Version,PackageFullName
@@ -42,37 +29,11 @@ $uwpRubbishApps = @(
     "Microsoft.YourPhone",
     "Microsoft.MicrosoftOfficeHub",
     "Fitbit.FitbitCoach",
-    "4DF9E0F8.Netflix",
     "Microsoft.GetHelp")
 
 foreach ($uwp in $uwpRubbishApps) {
     Get-AppxPackage -Name $uwp | Remove-AppxPackage
 }
-# -----------------------------------------------------------------------------
-Write-Host ""
-Write-Host "Installing IIS..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-DefaultDocument -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionDynamic -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionStatic -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebSockets -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ApplicationInit -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45 -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ServerSideIncludes
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-BasicAuthentication
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WindowsAuthentication
-# -----------------------------------------------------------------------------
-Write-Host ""
-Write-Host "Enable Windows 10 Developer Mode..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
-# -----------------------------------------------------------------------------
-Write-Host ""
-Write-Host "Enable Remote Desktop..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\" -Name "fDenyTSConnections" -Value 0
-Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\" -Name "UserAuthentication" -Value 1
-Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 if (Check-Command -cmdname 'choco') {
     Write-Host "Choco is already installed, skip installation."
@@ -84,40 +45,61 @@ else {
     Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 
+Write-Host "Config console aesthetics." -ForegroundColor Green
+Write-Host "------------------------------------" -ForegroundColor Green
+choco install "firacode" -y
+
+Set-Itemproperty -path "HKCU:\Console\%SystemRoot%_system32_cmd.exe" -Name "FaceName" -value "Fira Code Retina"
+Set-Itemproperty -path "HKCU:\Console\%SystemRoot%_system32_cmd.exe" -Name "FontSize" -value c0000
+Set-Itemproperty -path "HKCU:\Console\%SystemRoot%_system32_cmd.exe\" -Name "ScreenColors"  -value a
+
+Write-Host "Console aesthetics have been updated for the cmd. Please restart any active cmds..." -ForegroundColor Yellow
+
 Write-Host ""
 Write-Host "Installing Applications..." -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
 Write-Host "[WARN] Ma de in China: some software like Google Chrome require the true Internet first" -ForegroundColor Yellow
 
 $Apps = @(
+    "firacode",
     "7zip.install",
     "git",
+    "vscode",
+    "doxygen.install",
+    "putty",
+    "pingplotter",
+    "wireshark",
+    "zotero",
+    "r.studio",
+    "r",
+    "windirstat",
+    "gimp",
+    "samsung-magician",
+    "sublimetext3.app",
+    "python",
+    "python2",
     "microsoft-edge",
     "googlechrome",
-    "vlc",
-    "dotnetcore-sdk",
-    "ffmpeg",
     "wget",
     "openssl.light",
     "vscode",
-    "sysinternals",
-    "notepadplusplus.install",
-    "linqpad",
-    "fiddler",
-    "beyondcompare",
-    "filezilla",
-    "lightshot.install",
     "microsoft-teams.install",
-    "teamviewer",
     "github-desktop",
-    "irfanview",
-    "nodejs-lts",
-    "azure-cli",
-    "powershell-core")
+    "vlc",
+    "steam",
+    "qbittorrent",
+    "msiafterburner",
+    )
 
 foreach ($app in $Apps) {
     choco install $app -y
 }
+
+Write-Host "Beginning Python and R Dev Env set up." -ForegroundColor Green
+Write-Host "------------------------------------" -ForegroundColor Green
+python -m pip install --upgrade pip
+python -m pip install requirements.txt
+mkdir git
 
 Write-Host "------------------------------------" -ForegroundColor Green
 Read-Host -Prompt "Setup is done, restart is needed, press [ENTER] to restart computer."
