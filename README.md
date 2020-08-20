@@ -27,9 +27,10 @@ This script also runs a Python environment installation script after choco.
 - Set a New Computer Name
 - Disable Sleep on AC Power
 - Install Chocolate for Windows
+- Configure the CMD to my liking with some quick regedits (Fira Code font, green text on black background).
+- Install the following,
     - 7zip.install,
     - git,
-    - cygwin,
     - vscode,
     - doxygen.install,
     - putty,
@@ -65,3 +66,7 @@ This script also runs a Python environment installation script after choco.
     - Your Phone
     - My Office
     - FitbitCoach
+- Do some basic house cleaning for a Python / R workspace environment.
+    - Upgrade Pip (it never shuts up otherwise).
+    - Install some common libs I use (numpy of course and few others, see requirements.txt)
+    - make a git directory for my projects.

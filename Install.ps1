@@ -61,7 +61,6 @@ Write-Host "------------------------------------" -ForegroundColor Green
 Write-Host "[WARN] Ma de in China: some software like Google Chrome require the true Internet first" -ForegroundColor Yellow
 
 $Apps = @(
-    "firacode",
     "7zip.install",
     "git",
     "vscode",
