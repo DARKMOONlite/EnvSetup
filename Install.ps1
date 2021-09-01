@@ -43,6 +43,25 @@ foreach ($uwp in $uwpRubbishApps) {
     Get-AppxPackage -Name $uwp | Remove-AppxPackage
 }
 
+
+Write-Host ""
+Write-Host "Installing IIS..." -ForegroundColor Green
+Write-Host "------------------------------------" -ForegroundColor Green
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-DefaultDocument -All
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionDynamic -All
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionStatic -All
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebSockets -All
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-ApplicationInit -All
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45 -All
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-ServerSideIncludes
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-BasicAuthentication
+Enable-WindowsOptionalFeature -Online -FeatureName IIS-WindowsAuthentication
+# -----------------------------------------------------------------------------
+Write-Host ""
+Write-Host "Enable Windows 10 Developer Mode..." -ForegroundColor Green
+Write-Host "------------------------------------" -ForegroundColor Green
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+
 if (Check-Command -cmdname 'choco') {
     Write-Host "Choco is already installed, skip installation."
 }
@@ -175,6 +194,19 @@ InstallApps -Apps $productivity
 Write-Host "Minimal entertainment! Installing the basics." -ForegroundColor Green
 InstallApps -Apps $entertainment
 
+Write-Host "Installing Github.com/microsoft/artifacts-credprovider..." -ForegroundColor Green
+Write-Host "------------------------------------" -ForegroundColor Green
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/microsoft/artifacts-credprovider/master/helpers/installcredprovider.ps1'))
+
+# -----------------------------------------------------------------------------
+Write-Host ""
+Write-Host "Checking Windows updates..." -ForegroundColor Green
+Write-Host "------------------------------------" -ForegroundColor Green
+Install-Module -Name PSWindowsUpdate -Force
+Write-Host "Installing updates... (Computer will reboot in minutes...)" -ForegroundColor Green
+Get-WindowsUpdate -AcceptAll -Install -ForceInstall -AutoReboot
+
+# -----------------------------------------------------------------------------
 Write-Host "------------------------------------" -ForegroundColor Green
 Read-Host -Prompt "Setup is done, restart is needed, press [ENTER] to restart computer."
 Restart-Computer
