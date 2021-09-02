@@ -1,7 +1,8 @@
+  
 matplotlib
 numpy
 pandas
-selenium
+scipy
 sphinx
 seaborn
 watchdog
@@ -9,3 +10,6 @@ lxml
 virtualenv
 virtualenvwrapper-win
 python-dateutil
+autopep8
+requests
+urllib3
