@@ -3,6 +3,22 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 #-------------------------------------------------------------------------------------------
 # Configure your applications here!!
 
+####################################
+# This will all be removed!!
+$uwpRubbishApps = @(
+    "Microsoft.Messaging"
+    "king.com.CandyCrushSaga"
+    "Microsoft.BingNews"
+    "Microsoft.MicrosoftSolitaireCollection"
+    "Microsoft.People"
+    "Microsoft.WindowsFeedbackHub"
+    "Microsoft.YourPhone"
+    "Microsoft.MicrosoftOfficeHub"
+    "Fitbit.FitbitCoach"
+    "Microsoft.GetHelp"
+)
+####################################
+
 # Choose your editors here
 $editors = @(
     "vscode"
@@ -107,6 +123,11 @@ function Out {
     Write-Host "`r`n$($Message)" -ForegroundColor $Colour
 }
 
+function Await-User() {
+    Out 'Press any key to continue with restart. SAVE YOUR WORK' -Warn
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+}
+
 function Install-Apps([string[]]$Apps) {
     foreach ($app in $Apps) {
         choco install $app -y
@@ -159,6 +180,8 @@ function Add-Develop-Stuff() {
     $docPath = [Environment]::GetFolderPath("Documents")
     new-item -ItemType directory -Path $docPath\git
     # -----------------------------------------------------------------------------
+    Out "Check installation of Git directory, credentials and IIS is correct before continuing!" -Warn
+    Await-User
 }
 
 function Setup-Python-Workspace() {
@@ -175,8 +198,7 @@ function Clear-Windows-Rubbish() {
     # Get-AppxPackage | Format-Table -Property Name,Version,PackageFullName
     Out "Removing Windows crap Rubbish..." -Warn
     Out "--------------------------------"
-    $uwpRubbishApps = @("Microsoft.Messaging", "king.com.CandyCrushSaga", "Microsoft.BingNews", "Microsoft.MicrosoftSolitaireCollection", "Microsoft.People", "Microsoft.WindowsFeedbackHub", "Microsoft.YourPhone", "Microsoft.MicrosoftOfficeHub", "Fitbit.FitbitCoach", "Microsoft.GetHelp")
-    
+
     foreach ($uwp in $uwpRubbishApps) {
         Get-AppxPackage -Name $uwp | Remove-AppxPackage
     }
@@ -187,11 +209,12 @@ function Disable-Cortana-Regedits() {
     New-Item -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\' -Name 'Windows Search' | Out-Null
     New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' -Name 'AllowCortana' -PropertyType DWORD -Value '0' | Out-Null
     Out 'yay no Cortana getting in the way now! xD' -Comment
+    Await-User
 }
 
 # -----------------------------------------------------------------------------
 $computerName = Read-Host 'Enter New Computer Name (no spaces or special characters!)'
-Out "Renaming this computer to: " $computerName  -Warn
+Out "Renaming this computer to: $($computerName)" -Warn
 Rename-Computer -NewName $computerName
 # -----------------------------------------------------------------------------
 Write-Host ""
@@ -222,9 +245,10 @@ if($installDevContent) {
     Out "Setting up editors..." -Comment
     Out "---------------------"
     Install-Apps -Apps $editors
+    Await-User
 }
 
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 
 Out "Installing User Applications" -Comment
 Out "----------------------------"
@@ -252,6 +276,5 @@ Out  "Installing updates (Restart will be required)." -Install
 Get-WindowsUpdate -AcceptAll -Install -ForceInstall -AutoReboot
 # -----------------------------------------------------------------------------
 Read-Host -Prompt "Setup is done, restart is needed, press [ENTER] to restart computer"
-Out 'Press any key to continue with restart. SAVE YOUR WORK' -Warn
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+Await-User
 Restart-Computer
