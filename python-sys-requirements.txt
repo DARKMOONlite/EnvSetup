@@ -1,0 +1,16 @@
+matplotlib
+numpy
+pandas==1.4.1
+pandas-stubs==1.2.0.58
+scipy==1.8.0
+selenium
+sphinx
+seaborn
+watchdog
+lxml
+virtualenv
+virtualenvwrapper-win
+python-dateutil
+requests
+tqdm
+urllib3
