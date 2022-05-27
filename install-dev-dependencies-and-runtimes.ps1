@@ -77,7 +77,10 @@ Write-Host "    Python"
 python -m pip install --upgrade pip
 python -m pip install -r python-sys-requirements.txt
 mkdir git
-git clone https://github.com/albert118/python-utilities.git
+# Add an icon to the git directory
+"[.ShellClassInfo]`nIconResource=C:\Windows\System32\SHELL32.dll,12`n[ViewState]`nMode=`nVid=`nFolderType=Generic`n" | Out-File git\desktop.ini
+
+git clone https://github.com/albert118/python-utilities.git git
 
 Write-Host ""
 Write-Host "    WSL" -ForegroundColor Green
