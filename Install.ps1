@@ -1,280 +1,56 @@
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
-
-#-------------------------------------------------------------------------------------------
-# Configure your applications here!!
-
-####################################
-# This will all be removed!!
-$uwpRubbishApps = @(
-    "Microsoft.Messaging"
-    "king.com.CandyCrushSaga"
-    "Microsoft.BingNews"
-    "Microsoft.MicrosoftSolitaireCollection"
-    "Microsoft.People"
-    "Microsoft.WindowsFeedbackHub"
-    "Microsoft.YourPhone"
-    "Microsoft.MicrosoftOfficeHub"
-    "Fitbit.FitbitCoach"
-    "Microsoft.GetHelp"
-)
-####################################
-
-# Choose your editors here
-$editors = @(
-    "vscode"
-    "sublimetext3.app"
-    "visualstudio2019community"
-    )
-
-
-# utilities for system testing and general use
-$pcSystemApps = @(
-    "msiafterburner"
-    "7zip.install"
-    "samsung-magician"
-    "icue"
-    "discord"
-    "ddu"
-    "rufus"
-    "hwinfo"
-    )
-
-
-# development utilies
-$utilities = @(
-    "git"
-    "doxygen.install"
-    "putty"
-    "pingplotter"
-    "wireshark"
-    "windirstat"
-    "wget"
-    "openssl.light"
-    "hfsexplorer"
-    )
-
-
-# university, documents, admin stuff
-$productivity = @(
-    "zotero"
-    "gimp"
-    "microsoft-teams.install"
-    "grammarly"
-    "adobereader"
-    "parsec"
-    )
-
-# I use pretty much everything,
-# Note: vc runtimes are for all since 2005!!!
-#   If you have any issues uninstall all but 2017/19
-$langsAndRuntimes = @(
-    "r"
-    "python"
-    "nodejs"
-    "jre8"
-    "vcredist-all"
-    )
-
-
-# typically i just include all of them for testing purposes
-# but you do you - I know how people get fired up about their browsers...
-# tbh I just main edge cause clean lines and Chromium that's better than Chrome
-# "fight! fight! fight!"
-$browsers = @(
-    "microsoft-edge"
-    "googlechrome"
-    "firefox"
-    )
-
-
-# not much - keep it simple.
-$entertainment = @(
-    "vlc"
-    "steam"
-    )
-
-#-------------------------------------------------------------------------------------------
-
-$Colours = @("Green", "Yellow", "Red", "White")
-
-function Out {
-    param (
-        [Parameter(Mandatory=$true)]
-        [string]
-        $Message,
-
-        [switch]
-        $Install,
-
-        [switch]
-        $Warn,
-
-        [switch]
-        $Comment
-    )
-
-    # Default (White)
-    $Colour = $Colours[3]
-
-    if ($Comment) { $Colour = $Colours[0] }
-    if ($Install) { $Colour = $Colours[1] }
-    if ($Warn)   { $Colour = $Colours[2] }
-
-    Write-Host "`r`n$($Message)" -ForegroundColor $Colour
-}
-
-function Await-User() {
-    Out 'Press any key to continue with restart. SAVE YOUR WORK' -Warn
-    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
-}
-
-function Install-Apps([string[]]$Apps) {
-    foreach ($app in $Apps) {
-        choco install $app -y
-    }
-}
-
-function Check-Command($cmdname) {
-    return [bool](Get-Command -Name $cmdname -ErrorAction SilentlyContinue)
-}
-
-function Choco() {
-    if (Check-Command -cmdname 'choco') {
-        Out "Choco is already installed, skipping installation" -Comment
-    }
-    else {
-        Out "Installing Chocolatey Package Manager" -Install
-        Out "-------------------------------------"
-        Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-    }
-}
-
-function Add-Develop-Stuff() {
-    # -----------------------------------------------------------------------------
-    Out "Adding IIS..." -Install
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-DefaultDocument -All
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionDynamic -All
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionStatic -All
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebSockets -All
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-ApplicationInit -All
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45 -All
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-ServerSideIncludes
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-BasicAuthentication
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-WindowsAuthentication
-    # -----------------------------------------------------------------------------
-    Out "Enable Windows 10 Developer Mode..." -Install
-    Out "-----------------------------------"
-    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
-    # -----------------------------------------------------------------------------
-    Out "Config Fira Code fonts" -Install
-    Out "----------------------"
-    choco install "firacode" -y
-    Set-Itemproperty -path "HKCU:\Console\%SystemRoot%_system32_cmd.exe" -Name "FaceName" -value "Fira Code Retina"
-    Set-Itemproperty -path "HKCU:\Console\%SystemRoot%_system32_cmd.exe" -Name "FontSize" -value c0000
-    Set-Itemproperty -path "HKCU:\Console\%SystemRoot%_system32_cmd.exe\" -Name "ScreenColors"  -value a
-    Out "Console aesthetics have been updated for the cmd. Config will complete on restart." -Comment
-    # -----------------------------------------------------------------------------
-    Out "Installing Github.com/microsoft/artifacts-credprovider..." -Install
-    Out "---------------------------------------------------------"
-    iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/microsoft/artifacts-credprovider/master/helpers/installcredprovider.ps1'))
-    $docPath = [Environment]::GetFolderPath("Documents")
-    new-item -ItemType directory -Path $docPath\git
-    # -----------------------------------------------------------------------------
-    Out "Check installation of Git directory, credentials and IIS is correct before continuing!" -Warn
-    Await-User
-}
-
-function Setup-Python-Workspace() {
-    # -----------------------------------------------------------------------------
-    $docPath = [Environment]::GetFolderPath("Documents")
-    new-item -ItemType directory -Path $docPath\PythonWorkspace
-    python -m pip install --upgrade pip
-    python -m pip install requirements.txt
-    # -----------------------------------------------------------------------------
-}
-
-function Clear-Windows-Rubbish() {
-    # To list all appx packages:
-    # Get-AppxPackage | Format-Table -Property Name,Version,PackageFullName
-    Out "Removing Windows crap Rubbish..." -Warn
-    Out "--------------------------------"
-
-    foreach ($uwp in $uwpRubbishApps) {
-        Get-AppxPackage -Name $uwp | Remove-AppxPackage
-    }
-}
-
-function Disable-Cortana-Regedits() {
-    Out 'Bye Cortana - get out of my bloody system.' -Comment
-    New-Item -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\' -Name 'Windows Search' | Out-Null
-    New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' -Name 'AllowCortana' -PropertyType DWORD -Value '0' | Out-Null
-    Out 'yay no Cortana getting in the way now! xD' -Comment
-    Await-User
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { 
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; 
+    exit;
 }
 
 # -----------------------------------------------------------------------------
-$computerName = Read-Host 'Enter New Computer Name (no spaces or special characters!)'
-Out "Renaming this computer to: $($computerName)" -Warn
-Rename-Computer -NewName $computerName
+# Source script variables
+
+$configureSystemPreferences = $PSScriptRoot + "\configure-system-preferences.ps1";
+$removeUwpApps = $PSScriptRoot + "\remove-uwp-apps.ps1";
+$setUpChoco = $PSScriptRoot + "\setup-choco.ps1";
+$installDevDependencies = $PSScriptRoot + "\install-dev-dependencies-and-runtimes.ps1";
+$installProductivity = $PSScriptRoot + "\install-productivity.ps1";
+$installEntertainment = $PSScriptRoot + "\install-entertainment.ps1";
+$checkWindowsUpdates = $PSScriptRoot + "\check-windows-updates.ps1";
+
 # -----------------------------------------------------------------------------
+# Run scripts
+
+# Must always happen first!
+& $setUpChoco;
+
+& $configureSystemPreferences;
+& $removeUwpApps;
+
+Write-Host "Please review the system configuration and removed rubbish are as expected" -ForegroundColor Yellow;
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+
 Write-Host ""
-$devMachine = Read-Host 'Is this a developer machine? (Y/N default N):'
-$installDevContent = $devMachine.ToUpper().Trim() -eq 'Y'
+Write-Host "Installing Applications" -ForegroundColor Green;
+Write-Host "------------------------------------" -ForegroundColor Green;
+
+& $installDevDependencies;
+Write-Host "Please review the development dependencies and configuration are as expected" -ForegroundColor Yellow;
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+
+& $installProductivity;
+& $installEntertainment;
+Write-Host "Please review the productivity and entertainment installation is as expected" -ForegroundColor Yellow;
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+
+# Updates take a long time, check these last
+& $checkWindowsUpdates;
+
 # -----------------------------------------------------------------------------
-Out "Configure your sleep preferences (for always on choose 0)"
-$monitorTimeout = Read-Host 'Monitor timeout in minutes (0 always on):' -ForegroundColor Yellow
-$standbyTimeout = Read-Host 'Standby timeout in minutes (0 always on):' -ForegroundColor Yellow
-Powercfg /Change monitor-timeout-ac $monitorTimeout
-Powercfg /Change standby-timeout-ac $standbyTimeout
-# -----------------------------------------------------------------------------
+Write-Host "------------------------------------" -ForegroundColor Green;
+Read-Host -Prompt "Setup is done, restart is needed, press [ENTER] to once logs review to (optionally) restart";
 
-# Setup choco and clean-house
-Choco
-Clear-Windows-Rubbish
-Disable-Cortana-Regedits
+Write-Host "Ready to restart and apply changes (Y / N) ?"  $willRestart  -ForegroundColor Yellow;
 
-Out "Setting up runtimes..." -Install
-Install-Apps -Apps $langsAndRuntimes
+if ($willRestart -eq "Y") {
+    Write-Host -NoNewLine "Computer will restart on next keystroke";
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 
-# developer mode
-if($installDevContent) {
-    Add-Develop-Stuff
-    Out "Installing Python and Configuring the workspace environments..." -Install
-    Out "---------------------------------------------------------------"
-    Setup-Python-Workspace
-    Out "Setting up editors..." -Comment
-    Out "---------------------"
-    Install-Apps -Apps $editors
-    Await-User
+    Restart-Computer;
 }
-
-#-----------------------------------------------------------------------------
-
-Out "Installing User Applications" -Comment
-Out "----------------------------"
-
-Out  "Grabbing browsers - hold tight and get ready to Google..." -Install
-Install-Apps -Apps $browsers
-
-Out  "Setting up utilities..." -Install
-Install-Apps -Apps $utilities
-
-Out  "Installing PC System applications..." -Install
-Install-Apps -Apps $pcSystemApps
-
-Out  "Productivity setup and install..." -Install
-Install-Apps -Apps $productivity
-
-Out  "Minimal entertainment! Installing the basics." -Install
-Install-Apps -Apps $entertainment
-
-# -----------------------------------------------------------------------------
-Out  "Checking Windows updates. This will take awhile." -Comment
-Out  "------------------------------------------------"
-Install-Module -Name PSWindowsUpdate -Force
-Out  "Installing updates (Restart will be required)." -Install
-Get-WindowsUpdate -AcceptAll -Install -ForceInstall -AutoReboot
-# -----------------------------------------------------------------------------
-Read-Host -Prompt "Setup is done, restart is needed, press [ENTER] to restart computer"
-Await-User
-Restart-Computer
