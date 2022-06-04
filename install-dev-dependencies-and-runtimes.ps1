@@ -61,6 +61,7 @@ $langsAndRuntimes = @(
 function InstallApps([string[]]$Apps)
 {
     foreach ($app in $Apps) {
+        Write-Host ""
         choco install $app -y
     }
 }
@@ -76,7 +77,9 @@ Write-Host ""
 Write-Host "    Python"
 python -m pip install --upgrade pip
 python -m pip install -r python-sys-requirements.txt
+
 mkdir git
+
 # Add an icon to the git directory
 "[.ShellClassInfo]`nIconResource=C:\Windows\System32\SHELL32.dll,12`n[ViewState]`nMode=`nVid=`nFolderType=Generic`n" | Out-File git\desktop.ini
 
@@ -90,13 +93,17 @@ wsl --install
 Write-Host ""
 Write-Host "    Installing VS Code Extensions"
 foreach ($codeExtension in $vscodeExtensions) {
+    Write-Host ""
     code --install-extension $codeExtension
 }
 
-Write-Host "Setting up editors" -ForegroundColor Green
+Write-Host "     Setting up editors" -ForegroundColor Green
 Write-Host "     Remember to configure the Windows Terminal!" -ForegroundColor Yellow
 InstallApps -Apps $editors
 
-Write-Host "Installing Github.com/microsoft/artifacts-credprovider" -ForegroundColor Green
+Write-Host "      Installing Github.com/microsoft/artifacts-credprovider" -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
 iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/microsoft/artifacts-credprovider/master/helpers/installcredprovider.ps1'))
+
+
+Write-Host "Development Depenedencies were installed";

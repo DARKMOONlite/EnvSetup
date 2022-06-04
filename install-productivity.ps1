@@ -30,6 +30,7 @@ $pcSystemApps = @(
     "msiafterburner"
     "rufus"
     "hwinfo"
+    "adobereader"
 )
 
 # development utilies
@@ -44,6 +45,7 @@ $utilities = @(
     "hfsexplorer"
     "docker-desktop"
     "via" # for keyboard config loading
+    "voicemod"
 )
 
 
@@ -69,3 +71,5 @@ InstallApps -Apps $utilities
 
 Write-Host "Installing PC System applications" -ForegroundColor Green
 InstallApps -Apps $pcSystemApps
+
+Write-Host "Productivity installation compeleted" -ForegroundColor Green;

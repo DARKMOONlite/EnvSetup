@@ -20,3 +20,4 @@ function InstallApps([string[]]$Apps)
 
 Write-Host "Minimal entertainment! Installing the basics" -ForegroundColor Green
 InstallApps -Apps $entertainment
+Write-Host "Entertainment installation completed" -ForegroundColor Green;

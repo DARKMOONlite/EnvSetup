@@ -14,9 +14,12 @@ $uwpRubbishApps = @(
     "Microsoft.MicrosoftOfficeHub"
     "Fitbit.FitbitCoach"
     "Microsoft.GetHelp"
+    "Groove"
 )
 
 # -----------------------------------------------------------------------------
 foreach ($uwp in $uwpRubbishApps) {
     Get-AppxPackage -Name $uwp | Remove-AppxPackage
 }
+
+Write-Host "Removed UWP Apps" -ForegroundColor Green;
