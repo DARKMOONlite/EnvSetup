@@ -84,6 +84,7 @@ mkdir git
 "[.ShellClassInfo]`nIconResource=C:\Windows\System32\SHELL32.dll,12`n[ViewState]`nMode=`nVid=`nFolderType=Generic`n" | Out-File git\desktop.ini
 
 git clone https://github.com/albert118/python-utilities.git git
+git config core.ignorecase false # avooid having issues with case sensitive naming
 
 Write-Host ""
 Write-Host "    WSL" -ForegroundColor Green
