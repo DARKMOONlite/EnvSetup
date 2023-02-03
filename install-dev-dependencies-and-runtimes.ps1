@@ -145,4 +145,9 @@ Add-MpPreference -ExclusionPath "$env:USERPROFILE\.ssh"
 Add-MpPreference -ExclusionPath "$env:APPDATA\npm"
 Add-MpPreference -ExclusionPath "$env:APPDATA\git"
 
+
+Write-Host "      Adding default .ssh directory"  -ForegroundColor Green
+
+mkdir .ssh
+
 Write-Host "Development Depenedencies were installed";
