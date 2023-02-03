@@ -6,7 +6,6 @@ Write-Host "------------------------------------" -ForegroundColor Green
 $uwpRubbishApps = @(
     "Microsoft.Messaging"
     "king.com.CandyCrushSaga"
-    "Microsoft.BingNews"
     "Microsoft.MicrosoftSolitaireCollection"
     "Microsoft.People"
     "Microsoft.WindowsFeedbackHub"
@@ -14,8 +13,19 @@ $uwpRubbishApps = @(
     "Microsoft.MicrosoftOfficeHub"
     "Fitbit.FitbitCoach"
     "Microsoft.GetHelp"
-    "Groove"
-)
+    "Groove",
+    "Microsoft.Getstarted"
+    "Microsoft.WindowsMaps"
+    "Microsoft.MixedReality.Portal"
+    "Microsoft.SkypeApp",
+    "Microsoft.Microsoft3DViewer"
+    "Microsoft.ZuneMusic"
+    "Microsoft.ZuneVideo"
+    "Microsoft.WindowsSoundRecorder"
+    "Microsoft.PowerAutomateDesktop"
+    "Microsoft.BingWeather"
+    "Microsoft.BingNews",
+    "Microsoft.WindowsMaps"
 
 # -----------------------------------------------------------------------------
 foreach ($uwp in $uwpRubbishApps) {

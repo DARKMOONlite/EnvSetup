@@ -6,10 +6,10 @@ Write-Host "Renaming this computer to: " $computerName  -ForegroundColor Yellow
 Rename-Computer -NewName $computerName
 
 Write-Host ""
-Write-Host "Disable Sleep on AC Power" -ForegroundColor Green
+Write-Host "Disable Sleep on AC Power and set monitor timeout" -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
 Powercfg /Change monitor-timeout-ac 10
-Powercfg /Change standby-timeout-ac 30
+Powercfg /Change standby-timeout-ac 0
 
 Write-Host ""
 Write-Host "Enabling Dark Mode" -ForegroundColor Green

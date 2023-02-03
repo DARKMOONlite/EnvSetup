@@ -3,12 +3,12 @@
 # university, documents, admin stuff
 $productivity = @(
     "zotero"
-    "gimp"
+    # "gimp"
     "microsoft-teams.install"
-    "grammarly-edge"
-    "grammarly"
+    # "grammarly-edge"
+    # "grammarly"
     "adobereader"
-    "parsec"
+    # "parsec"
     "powertoys" # Windows PowerToys
     "zoom"
 )
@@ -30,7 +30,6 @@ $pcSystemApps = @(
     "msiafterburner"
     "rufus"
     "hwinfo"
-    "adobereader"
 )
 
 # development utilies
