@@ -1,6 +1,3 @@
-# TODO :
-Set-ExecutionPolicy RemoteSigned fix needs adding
-
 # Windows 10 Developer Machine Setup
 
 Fork of Edi Wang's set up script for new dev machines. You can modify the scripts to fit your own requirements. See Edi Wang [here](https://github.com/EdiWang).
@@ -21,6 +18,7 @@ Fork of Edi Wang's set up script for new dev machines. You can modify the script
 - Install the user apps
 - Install Power Tools
 - Install Windows updates
+- `Set-ExecutionPolicy RemoteSigned`
 
 ### Terminal Config
 
