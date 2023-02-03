@@ -4,7 +4,8 @@ Fork of Edi Wang's set up script for new dev machines. You can modify the script
 
 ## Prereq's
 
-- A clean install of Windows 10 Pro v2004 en-us or above.
+- A fresh install of Windows 10 and internet
+
 ## 'One Click' Copypasta install
 
 ```
@@ -13,12 +14,12 @@ iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercon
 
 ## Manual Install
 
-1. Download this fork version. Latest copy [here](https://github.com/albert118/EnvSetup/blob/master/Install.ps1)
-	**Optional**: For the original, download Edi Wang's latest script [here](https://raw.githubusercontent.com/EdiWang/EnvSetup/master/Install.ps1)
-	**Optional**: Import "Add_PS1_Run_as_administrator.reg" to your registry to enable context menu on the powershell files to run as Administrator.
+1. Download this repo as a zip
+
+  > **Optional**: Import "Add_PS1_Run_as_administrator.reg" to your registry to enable context menu on the powershell files to run as Administrator.
 
 2. Run `Install.ps1`.
-  * > right click and choose run with Powershell...
+  > right click and choose run with Powershell...
 
 ## Basic Computer Config
 
