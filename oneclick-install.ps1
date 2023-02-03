@@ -93,6 +93,7 @@ $uwpRubbishApps = @(
     "Microsoft.BingWeather"
     "Microsoft.BingNews",
     "Microsoft.WindowsMaps"
+)
 
 # -----------------------------------------------------------------------------
 foreach ($uwp in $uwpRubbishApps) {
@@ -248,8 +249,8 @@ git config --global core.autocrlf true # set line endings
 
 Write-Host "      Installing Github.com/microsoft/artifacts-credprovider" -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/microsoft/artifacts-credprovider/master/helpers/installcredprovider.ps1'))
 
+Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/microsoft/artifacts-credprovider/master/helpers/installcredprovider.ps1'))
 
 Write-Host "      Excluding repos from Windows Defender" -ForegroundColor Green
 
