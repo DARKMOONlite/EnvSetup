@@ -12,6 +12,7 @@ $setUpChoco = $PSScriptRoot + "\setup-choco.ps1";
 $installDevDependencies = $PSScriptRoot + "\install-dev-dependencies-and-runtimes.ps1";
 $installProductivity = $PSScriptRoot + "\install-productivity.ps1";
 $installEntertainment = $PSScriptRoot + "\install-entertainment.ps1";
+$installCustomEntertainment = $PSScriptRoot + "\install-custom-entertainment.ps1";
 $checkWindowsUpdates = $PSScriptRoot + "\check-windows-updates.ps1";
 
 # -----------------------------------------------------------------------------
@@ -30,7 +31,19 @@ Write-Host ""
 Write-Host "Installing Applications" -ForegroundColor Green;
 Write-Host "------------------------------------" -ForegroundColor Green;
 
-& $installDevDependencies;
+
+Write-Host "Install custom entertainment (Y / N) ?"  $installCustom  -ForegroundColor Yellow;
+
+if ($installCustom -eq "Y") {
+    & $installCustomEntertainment;
+}
+
+Write-Host "Install dev dependencies (Y / N) ?"  $installDev  -ForegroundColor Yellow;
+
+if ($installDev -eq "Y") {
+    & $installDevDependencies;
+}
+
 Write-Host "Please review the development dependencies and configuration are as expected" -ForegroundColor Yellow;
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 
