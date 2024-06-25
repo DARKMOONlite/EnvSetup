@@ -9,7 +9,7 @@ Fork of Albert118's setup script who forked it from Edi Wang's. You can modify t
 ## 'One Click' Copypasta install
 
 ```
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/albert118/EnvSetup/master/oneclick-install.ps1'))
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/DARKMOONlite/EnvSetup/master/oneclick-install.ps1'))
 ```
 
 ## Manual Install
