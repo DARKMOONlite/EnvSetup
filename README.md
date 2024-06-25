@@ -1,6 +1,6 @@
 # Windows 10 Developer Machine Setup
 
-Fork of Edi Wang's set up script for new dev machines. You can modify the scripts to fit your own requirements. See Edi Wang [here](https://github.com/EdiWang).
+Fork of Albert118's setup script who forked it from Edi Wang's. You can modify the scripts to fit your own requirements. See Edi Wang [here](https://github.com/EdiWang). See Albert118 [here](https://github.com/Albert118)
 
 ## Prereq's
 
