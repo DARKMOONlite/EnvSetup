@@ -23,11 +23,11 @@ $browsers = @(
 $pcSystemApps = @(
     "msiafterburner"
     "7zip.install"
-    "samsung-magician"
+    #"samsung-magician"
     "icue"
     "discord"
     "ddu"
-    "msiafterburner"
+    #"msiafterburner"
     "rufus"
     "hwinfo"
 )
@@ -41,10 +41,10 @@ $utilities = @(
     "windirstat"
     "wget"
     "openssl.light"
-    "hfsexplorer"
+    #"hfsexplorer"
     "docker-desktop"
-    "via" # for keyboard config loading
-    "voicemod"
+    #"via" # for keyboard config loading
+    #"voicemod"
 )
 
 
