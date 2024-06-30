@@ -2,8 +2,8 @@
 
 # not much - keep it simple.
 $entertainment = @(
-    "opera"
-    "origin"
+    #"opera"
+    #"origin"
     "zoom"
 )
 
